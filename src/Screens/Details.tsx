@@ -1,24 +1,70 @@
-import {Button, StyleSheet, Text, View} from 'react-native';
+import {Button, StyleSheet, Text, View, ScrollView, Image} from 'react-native';
 import React from 'react';
+
+//  Navigation
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStarkParamList} from '../App';
 import {useNavigation} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import ProductItem from '../Components/ProductItem';
 
 type DetailsProps = NativeStackScreenProps<RootStarkParamList, 'Details'>;
 
 export default function Details({route}: DetailsProps) {
   const {product} = route.params;
-
+  const {
+    name,
+    imageUrl,
+    offerPercentage,
+    id,
+    ratingCount,
+    rating,
+    tags,
+    originalPrice,
+    discountPrice,
+  } = product;
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStarkParamList>>();
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.name}>Details {product.name}</Text>
-      <Button title="Go to home" onPress={() => navigation.goBack()} />
-      <Button title="Go to first screen" onPress={() => navigation.popToTop()} />
-    </View>
+    <ScrollView style={styles.container}>
+      <View>
+        <Image source={{uri: imageUrl}} style={styles.image} />
+
+        {/* <View style={styles.container}> */}
+
+        <View>
+          <Text style={styles.name}>{product.name}</Text>
+
+          <View style={[styles.rowContainer, styles.ratingContainer]}>
+            <View style={styles.rating}>
+              <Text style={styles.ratingText}>{product.rating} ★</Text>
+            </View>
+            <Text style={styles.ratingCount}>
+              ({product.ratingCount.toLocaleString()})
+            </Text>
+          </View>
+
+          <View style={[styles.rowContainer, styles.priceContainer]}>
+            <Text style={styles.originalPrice}>
+              ₹{product.originalPrice.toLocaleString()}
+            </Text>
+            <Text style={styles.discountPrice}>
+              ₹{product.discountPrice.toLocaleString()}
+            </Text>
+            <Text style={styles.offerPercentage}>
+              %{product.offerPercentage} off
+            </Text>
+          </View>
+          {tags.map((tag, index) => (
+            <View key={index} style={styles.badge}>
+              <Text style={styles.tagBadge}> {tag} </Text>
+            </View>
+          ))}
+        </View>
+      </View>
+      {/* </View> */}
+    </ScrollView>
   );
 }
 
